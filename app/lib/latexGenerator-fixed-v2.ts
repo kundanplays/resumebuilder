@@ -149,13 +149,20 @@ ${Summary.map((point: string) => `\\item ${escapeLatex(point)}`).join("\n")}
 
 ${Education.length ? `\\section{Education}
 ${Education.map((edu: any) => {
+  // Debug logging for education data
+  console.log('🔍 Education Debug - edu object:', JSON.stringify(edu, null, 2));
+  console.log('🔍 edu.Duration:', edu.Duration, 'Type:', typeof edu.Duration);
+  console.log('🔍 edu.DurationOrYear:', edu.DurationOrYear, 'Type:', typeof edu.DurationOrYear);
+  
   const degree = edu.Degree || "Bachelor of Science";
   const university = edu.University || "University Name";
-  const duration = edu.Duration || "2014-2018";
+  // Fix: Use DurationOrYear instead of Duration
+  const duration = edu.DurationOrYear || edu.Duration || "2014-2018";
   const cgpa = edu.CGPA ? ` - GPA: ${escapeLatex(edu.CGPA)}` : "";
-  const coursework = edu.Coursework ? `\\\\\\textit{Relevant Coursework:} ${escapeLatex(edu.Coursework)}` : "";
+  const coursework = edu.RelevantCoursework && edu.RelevantCoursework.length ? `\\\\\\textit{Relevant Coursework:} ${escapeLatex(edu.RelevantCoursework.join(', '))}` : "";
+  const honors = edu.HonorsAndQualifications && edu.HonorsAndQualifications.length ? `\\\\\\textit{${escapeLatex(edu.HonorsAndQualifications.join(', '))}}` : "";
   
-  return `\\textbf{${escapeLatex(degree)}} - ${escapeLatex(university)} \\hfill ${escapeLatex(duration)}${cgpa}${coursework}`;
+  return `\\textbf{${escapeLatex(degree)}} - ${escapeLatex(university)} \\hfill ${escapeLatex(duration)}${cgpa}${coursework}${honors}`;
 }).join(" \\\\\n")}
 
 ` : ""}
@@ -310,11 +317,13 @@ ${Education.length ? `\\section{Education}
 ${Education.map((edu: any) => {
   const degree = edu.Degree || "Bachelor of Science";
   const university = edu.University || "University Name";
-  const duration = edu.Duration || "2014-2018";
+  // Fix: Use DurationOrYear instead of Duration
+  const duration = edu.DurationOrYear || edu.Duration || "2014-2018";
   const cgpa = edu.CGPA ? ` | GPA: ${escapeLatex(edu.CGPA)}` : "";
-  const coursework = edu.Coursework ? `\\\\\\textit{Relevant Coursework:} ${escapeLatex(edu.Coursework)}` : "";
+  const coursework = edu.RelevantCoursework && edu.RelevantCoursework.length ? `\\\\\\textit{Relevant Coursework:} ${escapeLatex(edu.RelevantCoursework.join(', '))}` : "";
+  const honors = edu.HonorsAndQualifications && edu.HonorsAndQualifications.length ? `\\\\\\textit{${escapeLatex(edu.HonorsAndQualifications.join(', '))}}` : "";
   
-  return `\\textbf{${escapeLatex(degree)}} | \\textit{${escapeLatex(university)}} \\hfill ${escapeLatex(duration)}${cgpa}${coursework}`;
+  return `\\textbf{${escapeLatex(degree)}} | \\textit{${escapeLatex(university)}} \\hfill ${escapeLatex(duration)}${cgpa}${coursework}${honors}`;
 }).join(" \\\\\n")}
 
 ` : ""}
@@ -365,7 +374,8 @@ export function generateLatex3(data: any = {}): string {
   } = data;
 
   const formatEducation = (edu: any) => {
-    const duration = edu.Duration ? escapeLatex(edu.Duration) : "2000-2005";
+    // Fix: Use DurationOrYear instead of Duration
+    const duration = edu.DurationOrYear ? escapeLatex(edu.DurationOrYear) : edu.Duration ? escapeLatex(edu.Duration) : "2000-2005";
     const degree = edu.Degree ? escapeLatex(edu.Degree) : "Bachelor of Science";
     const university = edu.University ? escapeLatex(edu.University) : "University Name";
     const score = edu.CGPA
@@ -373,8 +383,10 @@ export function generateLatex3(data: any = {}): string {
       : edu.Percentage
       ? `, ${escapeLatex(edu.Percentage)}%`
       : ", GPA: 3.9/4.0";
+    const coursework = edu.RelevantCoursework && edu.RelevantCoursework.length ? `\\\\\\textit{Relevant Coursework:} ${escapeLatex(edu.RelevantCoursework.join(', '))}` : "";
+    const honors = edu.HonorsAndQualifications && edu.HonorsAndQualifications.length ? `\\\\\\textit{${escapeLatex(edu.HonorsAndQualifications.join(', '))}}` : "";
     
-    return `\\textbf{${degree}} - ${university} \\hfill ${duration}${score}`;
+    return `\\textbf{${degree}} - ${university} \\hfill ${duration}${score}${coursework}${honors}`;
   };
 
   const formatExperience = (exp: any) => {

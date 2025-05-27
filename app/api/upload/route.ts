@@ -318,6 +318,9 @@ Provide the output as a single JSON object enclosed in a markdown code block lab
       "Location": "City, State (Optional)",
       "DurationOrYear": "e.g., Aug 2014 - May 2018 or Graduated May 2018",
       "CGPA": "e.g., 3.8/4.0 (Include if good and present; omit if not noteworthy or absent)",
+      "HonorsAndQualifications": [ // Optional: Extract any academic honors, rankings, qualifications like 'First Rank', 'Gold Medalist', 'GSET Qualified', etc.
+        "Honor/Qualification 1", "Honor/Qualification 2"
+      ],
       "RelevantCoursework": [ // Optional: List 3-4 courses highly relevant to ${targetJobRole} if available or inferable.
         "Course 1", "Course 2"
       ]
