@@ -1,0 +1,14 @@
+{
+  "name": "resume-builder-workspace",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "cd ResumeBuilder && npm run dev",
+    "build": "cd ResumeBuilder && npm run build",
+    "start": "cd ResumeBuilder && npm run start",
+    "lint": "cd ResumeBuilder && npm run lint",
+    "install": "cd ResumeBuilder && npm install"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.8"
+  }
+}
