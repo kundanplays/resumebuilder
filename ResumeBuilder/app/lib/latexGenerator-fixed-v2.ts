@@ -104,8 +104,19 @@ ${highlights.join("\n")}
       const name = cert.Name || cert.name || "Certificate Name";
       const organization = cert.IssuingOrganization || cert.organization || "Issuing Organization";
       const date = cert.Date || cert.date || "";
+      const expiryDate = cert.ExpiryDate || "";
+      const certNumber = cert.CertificateNumber || "";
+      const verificationURL = cert.VerificationURL || "";
+      const additionalDetails = cert.AdditionalDetails || "";
       
-      return `\\textbf{${escapeLatex(name)}} - ${escapeLatex(organization)}${date ? ` (${escapeLatex(date)})` : ""}`;
+      let certLine = `\\textbf{${escapeLatex(name)}} - ${escapeLatex(organization)}`;
+      if (date) certLine += ` (${escapeLatex(date)})`;
+      if (expiryDate) certLine += ` - Expires: ${escapeLatex(expiryDate)}`;
+      if (certNumber) certLine += `\\\\Certificate ID: ${escapeLatex(certNumber)}`;
+      if (verificationURL) certLine += `\\\\Verification: \\href{${verificationURL}}{${verificationURL}}`;
+      if (additionalDetails) certLine += `\\\\${escapeLatex(additionalDetails)}`;
+      
+      return certLine;
     }).join(" \\\\\n");
   };
 
@@ -273,8 +284,19 @@ ${highlights.join("\n")}
       const name = cert.Name || cert.name || "Certificate Name";
       const organization = cert.IssuingOrganization || cert.organization || "Issuing Organization";
       const date = cert.Date || cert.date || "";
+      const expiryDate = cert.ExpiryDate || "";
+      const certNumber = cert.CertificateNumber || "";
+      const verificationURL = cert.VerificationURL || "";
+      const additionalDetails = cert.AdditionalDetails || "";
       
-      return `\\textbf{${escapeLatex(name)}} | \\textit{${escapeLatex(organization)}}${date ? ` | ${escapeLatex(date)}` : ""}`;
+      let certLine = `\\textbf{${escapeLatex(name)}} - ${escapeLatex(organization)}`;
+      if (date) certLine += ` (${escapeLatex(date)})`;
+      if (expiryDate) certLine += ` - Expires: ${escapeLatex(expiryDate)}`;
+      if (certNumber) certLine += `\\\\Certificate ID: ${escapeLatex(certNumber)}`;
+      if (verificationURL) certLine += `\\\\Verification: \\href{${verificationURL}}{${verificationURL}}`;
+      if (additionalDetails) certLine += `\\\\${escapeLatex(additionalDetails)}`;
+      
+      return certLine;
     }).join(" \\\\\n");
   };
 
@@ -455,8 +477,19 @@ ${escapeLatex(description)}\\\\
       const name = cert.Name || cert.name || "Certificate Name";
       const organization = cert.IssuingOrganization || cert.organization || "Issuing Organization";
       const date = cert.Date || cert.date || "";
+      const expiryDate = cert.ExpiryDate || "";
+      const certNumber = cert.CertificateNumber || "";
+      const verificationURL = cert.VerificationURL || "";
+      const additionalDetails = cert.AdditionalDetails || "";
       
-      return `\\textbf{${escapeLatex(name)}} - ${escapeLatex(organization)}${date ? ` (${escapeLatex(date)})` : ""}`;
+      let certLine = `\\textbf{${escapeLatex(name)}} - ${escapeLatex(organization)}`;
+      if (date) certLine += ` (${escapeLatex(date)})`;
+      if (expiryDate) certLine += ` - Expires: ${escapeLatex(expiryDate)}`;
+      if (certNumber) certLine += `\\\\Certificate ID: ${escapeLatex(certNumber)}`;
+      if (verificationURL) certLine += `\\\\Verification: \\href{${verificationURL}}{${verificationURL}}`;
+      if (additionalDetails) certLine += `\\\\${escapeLatex(additionalDetails)}`;
+      
+      return certLine;
     }).join(" \\\\\n");
   };
 

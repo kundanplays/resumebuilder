@@ -329,6 +329,12 @@ export async function POST(req: Request) {
    - If creating new achievements, use realistic, specific numbers (e.g., "15%", "25 team members", "3 projects", "$50K revenue")
    - Make numbers contextually appropriate for the role and experience level
 
+**CRITICAL CERTIFICATE INSTRUCTION**:
+1. **Certificate Numbers**: ALWAYS extract and include certificate numbers, certificate IDs, license numbers, or any alphanumeric identifiers associated with certificates if they are present in the uploaded resume
+2. **Certificate Images**: If the uploaded resume contains certificate images (embedded or converted to PDF), extract ALL certificate information including certificate numbers, issuing body details, and exact certification names
+3. **Certificate Dates**: Extract exact dates including month and year when certificates were issued or when they expire
+4. **Verification Links**: If any certificate verification URLs or QR codes are mentioned, include them in the certificate information
+
 **Overall Task:**
 Analyze the uploaded resume properly. Then, extract, critically evaluate, rewrite, and if necessary, **CREATE** content for all sections to perfectly align with the target role of "${targetJobRole}" and "${experienceLevel}". The output must be ATS-friendly, using strong action verbs and quantifiable achievements where possible. If the original resume lacks details, generate plausible, role-appropriate content.
 
@@ -439,13 +445,19 @@ Provide the output as a single JSON object enclosed in a markdown code block lab
     // Ensure 2-3 projects. If the resume has none, CREATE them.
   ],
   "Certificates": [
-    // For ALL candidates. List relevant existing certificates or CREATE 1-2 plausible ones if none are suitable/present/Certificate can be image converted into pdf as well.
+    // CRITICAL: Extract ALL certificate information including numbers, IDs, and verification details
+    // For ALL candidates. List relevant existing certificates or CREATE 1-2 plausible ones if none are suitable/present
+    // Certificate images converted to PDF should be thoroughly analyzed for all details
     {
-      "Name": "Certificate Name (must be relevant to '${targetJobRole}' or broadly professional)",
-      "IssuingOrganization": "e.g., Coursera, HubSpot Academy, Google, PMI",
-      "Date": "Year or Month Year (Optional, otherwise null)"
+      "Name": "EXACT Certificate Name (must be relevant to '${targetJobRole}' or broadly professional)",
+      "IssuingOrganization": "EXACT issuing organization name (e.g., Coursera, HubSpot Academy, Google, PMI, Microsoft, Amazon, etc.)",
+      "Date": "EXACT date as mentioned - Month Year format preferred (e.g., 'January 2023', 'March 2024')",
+      "ExpiryDate": "Expiry date if mentioned in the original certificate (otherwise null)",
+      "CertificateNumber": "CRITICAL: Extract the EXACT certificate number, certificate ID, license number, or any alphanumeric identifier if present in the uploaded resume. Examples: 'CERT-2024-ABC123', 'License #12345', 'ID: XYZ789'. If no number is visible, set to null",
+      "VerificationURL": "Extract any verification links, QR code URLs, or validation URLs mentioned with the certificate (otherwise null)",
+      "AdditionalDetails": "Any other relevant details like score, grade, or special recognition mentioned with the certificate (otherwise null)"
     }
-    // If none in resume, CREATE 1-2 relevant ones.
+    // If none in resume, CREATE 1-2 relevant ones but omit CertificateNumber and VerificationURL for created certificates.
   ],
   "Skills": {
     // Categorize skills. Ensure ATS-friendliness. CREATE skills if resume is sparse but they are expected for the role.
@@ -468,6 +480,8 @@ Focus on creating the *best possible resume content* for the user given their in
 - ALWAYS use specific, realistic numbers and percentages (e.g., "15%", "5 team members", "$100K revenue")
 - If the original resume contains specific metrics, use them exactly as written
 - If creating new achievements, use contextually appropriate, realistic numbers for the role and experience level
+- **CERTIFICATES**: Extract ALL certificate details including exact certificate numbers, IDs, verification URLs, and expiry dates
+- **IMAGES**: If certificates appear as images in the uploaded PDF, analyze them thoroughly for all text and numerical information
 `;
 
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
@@ -650,6 +664,10 @@ ${data.Certificates.map((cert: any) => {
   let certLine = `\\textbf{${escapeLatex(cert.Name || "Certificate")}}`;
   if (cert.IssuingOrganization) certLine += ` - ${escapeLatex(cert.IssuingOrganization)}`;
   if (cert.Date) certLine += ` (${escapeLatex(cert.Date)})`;
+  if (cert.ExpiryDate) certLine += ` - Expires: ${escapeLatex(cert.ExpiryDate)}`;
+  if (cert.CertificateNumber) certLine += `\\\\Certificate ID: ${escapeLatex(cert.CertificateNumber)}`;
+  if (cert.VerificationURL) certLine += `\\\\Verification: \\href{${cert.VerificationURL}}{${cert.VerificationURL}}`;
+  if (cert.AdditionalDetails) certLine += `\\\\${escapeLatex(cert.AdditionalDetails)}`;
   return certLine;
 }).join(" \\\\\\\\ ")}
 
@@ -752,6 +770,10 @@ ${data.Certificates.map((cert: any) => {
   let certLine = `\\textbf{${escapeLatex(cert.Name || "Certificate")}}`;
   if (cert.IssuingOrganization) certLine += ` - ${escapeLatex(cert.IssuingOrganization)}`;
   if (cert.Date) certLine += ` (${escapeLatex(cert.Date)})`;
+  if (cert.ExpiryDate) certLine += ` - Expires: ${escapeLatex(cert.ExpiryDate)}`;
+  if (cert.CertificateNumber) certLine += `\\\\Certificate ID: ${escapeLatex(cert.CertificateNumber)}`;
+  if (cert.VerificationURL) certLine += `\\\\Verification: \\href{${cert.VerificationURL}}{${cert.VerificationURL}}`;
+  if (cert.AdditionalDetails) certLine += `\\\\${escapeLatex(cert.AdditionalDetails)}`;
   return certLine;
 }).join(" \\\\\\\\ ")}
 
